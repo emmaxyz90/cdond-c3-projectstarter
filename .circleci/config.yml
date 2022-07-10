@@ -169,18 +169,18 @@ jobs:
     docker:
       # Docker image here that supports Ansible
       - image: python:3.7-alpine3.11
-      - image: amazon/aws-cli
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["57:84:28:b2:fc:da:0d:34:69:21:d7:f7:37:19:a7:1c"]
       - attach_workspace:
-          at: ~/
-      - run: yum install -y tar gzip
+          at: ~/      
       - run:
           name: Install dependencies
           command: |            
             apk add --update ansible
+            yum install -y tar gzip
+            apt install awscli
       - run:
           name: Configure server
           command: |
