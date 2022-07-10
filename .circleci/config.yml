@@ -3,6 +3,8 @@ version: 2.1
 commands:
   destroy-environment-frontend:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID. 
+    docker:
+      - image: amazon/aws-cli
     steps:
       - run:
           name: Destroy frontend environment
@@ -12,6 +14,8 @@ commands:
   
   destroy-environment-backend:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID. 
+    docker:
+      - image: amazon/aws-cli
     steps:
       - run:
           name: Destroy backend environment
@@ -175,10 +179,10 @@ jobs:
           fingerprints: ["57:84:28:b2:fc:da:0d:34:69:21:d7:f7:37:19:a7:1c"]
       - attach_workspace:
           at: ~/
+      - run: yum install -y tar gzip
       - run:
           name: Install dependencies
-          command: |
-            yum install -y tar gzip
+          command: |            
             apk add --update ansible
       - run:
           name: Configure server
