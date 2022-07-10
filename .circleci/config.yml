@@ -148,7 +148,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> .circleci/ansible/inventory.txt            
+              --output text >> ansible/inventory.txt            
       - persist_to_workspace:
           root: ~/
           paths:
@@ -163,7 +163,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["57:84:28:b2:fc:da:0d:34:69:21:d7:f7:37:19:a7:1c"]
+          fingerprints: ["55:43:04:8a:b1:31:17:c5:13:3c:8d:f8:ba:2e:97:4d"]
       - attach_workspace:
           at: ~/      
       - run:
