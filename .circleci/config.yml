@@ -8,8 +8,8 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-frontend${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name udapeople-backend${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -155,7 +155,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environments
-      
+
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
@@ -178,10 +178,6 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml 
       # Here's where you will add some code to rollback on failure  
       - destroy-environments
-<<<<<<< HEAD
-
-=======
->>>>>>> 8970bbaebb921d26f418881a93c0643b6fc69b73
 
   run-migrations:
     docker:
@@ -315,11 +311,11 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure:
-          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
+      # - deploy-infrastructure:
+      #     # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       # - run-migrations:
