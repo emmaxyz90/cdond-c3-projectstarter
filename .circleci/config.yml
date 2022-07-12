@@ -395,7 +395,7 @@ jobs:
             else
               echo "Promotion successfully completed"
             fi
-=======
+
   cleanup:
       docker:
         - image: amazon/aws-cli
@@ -424,8 +424,6 @@ jobs:
               else
                 echo "Promotion successfully completed"
               fi
->>>>>>> e3b7effed289e605ab36c659ba105f91dd86f3eb
-            
 
 workflows:
   default:
