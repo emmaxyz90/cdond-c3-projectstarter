@@ -146,13 +146,14 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
+            touch inventory.txt && echo '[web]' > inventory.txt && \
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> .circleci/ansible/inventory.txt            
+              --output text >> inventory.txt            
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - inventory.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environments
 
@@ -163,7 +164,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["55:43:04:8a:b1:31:17:c5:13:3c:8d:f8:ba:2e:97:4d"]
+          fingerprints: ["68:bb:23:41:ea:2e:92:1d:a8:3d:97:31:40:09:b7:f3"]
       - attach_workspace:
           at: ~/      
       - run:
@@ -175,7 +176,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible && \
-            ansible-playbook -i inventory.txt configure-server.yml 
+            ansible-playbook -i ~/inventory.txt configure-server.yml 
       # Here's where you will add some code to rollback on failure  
       - destroy-environments
 
@@ -311,13 +312,13 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [master]
+      - deploy-infrastructure:
+          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
       - configure-infrastructure
-          # requires: [deploy-infrastructure]
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
