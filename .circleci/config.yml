@@ -227,13 +227,6 @@ jobs:
             yum install -y tar gzip
             curl -sL https://rpm.nodesource.com/setup_13.x |  bash -
             yum install -y nodejs
-      - run:
-          name: Install AWS CLI dependencies
-          command: |
-            sudo apt-get update && sudo apt-get install -yy less
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
       - attach_workspace:
           at: ~/
       - run:
@@ -255,9 +248,9 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       
-      - destroy-environments
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
+      # - destroy-environments
+      # - revert-migrations:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
                     
   deploy-backend:
     docker:
@@ -269,7 +262,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install -y tar gzip
+            apk add --update tar gzip
             apk add --update ansible curl rsync openssh nodejs npm
             ansible --version
             pip install awscli
@@ -290,9 +283,9 @@ jobs:
             cat inventory.txt
             ansible-playbook -i ~/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy-environments
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
+      # - destroy-environments
+      # - revert-migrations:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
   # smoke-test:
   #   docker:
