@@ -268,6 +268,9 @@ jobs:
             aws --version
       - attach_workspace:
           at: ~/
+      - run: 
+          name: View content of inventory.txt
+          command: cat ~/inventory.txt 
       - run:
           name: Deploy backend
           command: |
@@ -338,9 +341,9 @@ jobs:
             else
                 return 1
             fi
-      - destroy-environments
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
+      # - destroy-environments
+      # - revert-migrations:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
 
   cloudfront-update:
     docker:
@@ -365,37 +368,7 @@ jobs:
       - destroy-environments
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
-<<<<<<< HEAD
 
-  cleanup:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Get old stack workflow id
-          command: |
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text)
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-            # Fetch the stack names          
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                    --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}" 
-      - run:
-          name: Remove old stacks and files
-          command: |
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
-            then
-              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
-            else
-              echo "Promotion successfully completed"
-            fi
-=======
   cleanup:
       docker:
         - image: amazon/aws-cli
@@ -422,9 +395,8 @@ jobs:
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
               else
-                echo "Promotion successfully completed"
+                echo "Old Stack successfully removed"
               fi
->>>>>>> e3b7effed289e605ab36c659ba105f91dd86f3eb
             
 
 workflows:
