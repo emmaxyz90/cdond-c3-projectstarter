@@ -173,6 +173,8 @@ jobs:
           command: |            
             apk add --update ansible
             apk add --update tar gzip
+            pip install awscli
+            aws --version
       - run:
           name: Configure server
           command: |
