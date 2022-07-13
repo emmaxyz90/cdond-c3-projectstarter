@@ -39,16 +39,17 @@
     src: artifact.tar.gz
     dest: ~/backendApp
 
-- name: "Installing Node Dependencies"
+- name: "Installing Node Dependencies and executing node app with pm2"
   shell: |
     cd ~/backendApp
     npm i
-
-- name: "Executing node app with pm2"
-  shell: |
-    cd ~/backendApp/dist
     pm2 stop default
-    pm2 start npm -- start  
+    pm2 start npm -- start 
+
+# - name: "Executing node app with pm2"
+#   shell: |
+#     cd ~/backendApp/dist
+     
 
 
 
