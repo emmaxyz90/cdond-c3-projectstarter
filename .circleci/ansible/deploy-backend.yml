@@ -7,6 +7,53 @@
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
+  
+  - name: "update apt packages."
+    become: yes
+    apt:
+      update_cache: yes
+
+  - name: "upgrade packages"
+    become: yes
+    apt:
+      upgrade: yes
+
+  - name: remove dependencies that are no longer required
+    become: yes
+    apt:
+      autoremove: yes
+
+  - name: "install dependencies."
+    become: yes
+    apt:
+      name: ["nodejs", "npm"]
+      state: latest
+      update_cache: yes
+
+  - name: "install pm2"
+    become: yes
+    npm:
+      name: pm2
+      global: yes
+      production: yes
+      state: present
+
+  - name: "Create backend app directory"
+    file:
+      path: ~/backendApp
+    
+  - name: "Unarchive backend files"
+    unarchive:
+      src: artifact.tar.gz
+      dest: ~/backendApp
+
+  - name: "Installing Node Dependencies and executing node app with pm2"
+    shell: |
+      cd ~/backendApp
+      npm i
+      pm2 stop default
+      pm2 start npm -- start 
+
   roles:
     - deploy
   environment:
