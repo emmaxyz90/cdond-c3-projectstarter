@@ -14,36 +14,36 @@
       wait_for_connection:
     
     - name: "Creates backend app directory"
-    file:
-      path: ~/backendApp
-      state: directory
+      file:
+        path: ~/backendApp
+        state: directory
 
-  - name: "Unarchive Backend files"
-    unarchive:
-      src: artifact.tar.gz
-      dest: ~/backendApp
+    - name: "Unarchive Backend files"
+      unarchive:
+        src: artifact.tar.gz
+        dest: ~/backendApp
 
-  - name: "Installing Node Dependencies"
-    shell: |
-      cd ~/backendApp
-      npm i
+    - name: "Installing Node Dependencies"
+      shell: |
+        cd ~/backendApp
+        npm i
 
-  - name: "Executing Node app with pm2"
-    shell: |
-      cd ~/backendApp/dist
-      pm2 stop default
-      pm2 start main.js
+    - name: "Executing Node app with pm2"
+      shell: |
+        cd ~/backendApp/dist
+        pm2 stop default
+        pm2 start main.js
 
-    register: execute_node
+      register: execute_node
 
-  - name: "print message"
-    debug:
-      msg: "{{ execute_node.stdout_lines }}"
+    - name: "print message"
+      debug:
+        msg: "{{ execute_node.stdout_lines }}"
 
-  - name: "Configure pm2 to start as a service"
-    become: true
-    shell: |
-      env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu 
+    - name: "Configure pm2 to start as a service"
+      become: true
+      shell: |
+        env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu 
 
   roles:
     - deploy
