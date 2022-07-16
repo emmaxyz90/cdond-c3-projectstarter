@@ -8,7 +8,7 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
-  - pre_tasks:
+  pre_tasks:
     - name: "wait 60 seconds for target connection to become reachable/usable."
       wait_for_connection:
   
@@ -61,7 +61,7 @@
   roles:
     - deploy
 
-    
+
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
