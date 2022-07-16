@@ -49,7 +49,7 @@
       
     - name: "Unarchive backend files"
       unarchive:
-        src: artifact.tar.gz
+        src: backend/artifact.tar.gz
         dest: ~/backendApp
 
     - name: "Installing Node Dependencies and executing node app with pm2"
