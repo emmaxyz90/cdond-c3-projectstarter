@@ -45,6 +45,7 @@
     - name: "Create backend app directory"
       file:
         path: ~/backendApp
+        state: directory
       
     - name: "Unarchive backend files"
       unarchive:
