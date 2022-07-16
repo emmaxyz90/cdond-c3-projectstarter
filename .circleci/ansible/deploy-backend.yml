@@ -9,57 +9,59 @@
     - ansible_stdout_callback: yaml
 
   - pre_tasks:
-  - name: "wait 60 seconds for target connection to become reachable/usable."
-    wait_for_connection:
+    - name: "wait 60 seconds for target connection to become reachable/usable."
+      wait_for_connection:
   
-  - name: "update apt packages."
-    become: yes
-    apt:
-      update_cache: yes
+    - name: "update apt packages."
+      become: yes
+      apt:
+        update_cache: yes
 
-  - name: "upgrade packages"
-    become: yes
-    apt:
-      upgrade: yes
+    - name: "upgrade packages"
+      become: yes
+      apt:
+        upgrade: yes
 
-  - name: remove dependencies that are no longer required
-    become: yes
-    apt:
-      autoremove: yes
+    - name: remove dependencies that are no longer required
+      become: yes
+      apt:
+        autoremove: yes
 
-  - name: "install dependencies."
-    become: yes
-    apt:
-      name: ["nodejs", "npm"]
-      state: latest
-      update_cache: yes
+    - name: "install dependencies."
+      become: yes
+      apt:
+        name: ["nodejs", "npm"]
+        state: latest
+        update_cache: yes
 
-  - name: "install pm2"
-    become: yes
-    npm:
-      name: pm2
-      global: yes
-      production: yes
-      state: present
+    - name: "install pm2"
+      become: yes
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
 
-  - name: "Create backend app directory"
-    file:
-      path: ~/backendApp
-    
-  - name: "Unarchive backend files"
-    unarchive:
-      src: artifact.tar.gz
-      dest: ~/backendApp
+    - name: "Create backend app directory"
+      file:
+        path: ~/backendApp
+      
+    - name: "Unarchive backend files"
+      unarchive:
+        src: artifact.tar.gz
+        dest: ~/backendApp
 
-  - name: "Installing Node Dependencies and executing node app with pm2"
-    shell: |
-      cd ~/backendApp
-      npm i
-      pm2 stop default
-      pm2 start npm -- start 
+    - name: "Installing Node Dependencies and executing node app with pm2"
+      shell: |
+        cd ~/backendApp
+        npm i
+        pm2 stop default
+        pm2 start npm -- start 
 
   roles:
     - deploy
+
+    
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
