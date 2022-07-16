@@ -49,8 +49,9 @@
       
     - name: "Unarchive backend files"
       unarchive:
-        src: artifact.tar.gz
+        src: ./files/artifact.tar.gz
         dest: ~/backendApp
+        remote_src: True 
 
     - name: "Installing Node Dependencies and executing node app with pm2"
       shell: |
