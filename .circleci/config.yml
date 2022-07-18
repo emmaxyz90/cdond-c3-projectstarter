@@ -369,7 +369,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             yum install -y nodejs
       - restore_cache:
-          keys: [OldWorkflowID]
+          keys: [oldWorkflowID]
       - run:
           name: Update cloudfront distribution
           command: |
@@ -387,8 +387,8 @@ jobs:
             
             echo "successful promotion of new version to production in CloudFront"
       - save_cache:
-          paths: [OldWorkflowID]
-          key: oldworkflowID
+          paths: [oldWorkflowID]
+          key: OldworkflowID
       - destroy-environments
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
@@ -404,7 +404,7 @@ jobs:
           command: |
             yum install -y tar gzip curl
       - restore_cache:
-          keys: [OldWorkflowID]
+          keys: [oldWorkflowID]
       - run:
           name: Get old stack workflow id
           command: |
