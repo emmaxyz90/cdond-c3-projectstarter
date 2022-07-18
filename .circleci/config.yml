@@ -396,7 +396,6 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            echo <<pipeline.parameters.workflow_id>>
             export OldWorkflowID=<<pipeline.parameters.workflow_id>>
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
