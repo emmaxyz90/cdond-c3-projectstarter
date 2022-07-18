@@ -368,8 +368,6 @@ jobs:
             yum install -y tar gzip curl
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             yum install -y nodejs
-      - restore_cache:
-          keys: [oldWorkflowID]
       - run:
           name: Update cloudfront distribution
           command: |
@@ -377,6 +375,7 @@ jobs:
                     list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                     --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
+            echo "$OldWorkflowID" > output.txt
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
 
             # aws cloudformation deploy \
@@ -386,9 +385,10 @@ jobs:
             #   --tags project=udapeople
             
             echo "successful promotion of new version to production in CloudFront"
-      - save_cache:
-          paths: [oldWorkflowID]
-          key: OldworkflowID
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output.txt
       - destroy-environments
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
@@ -399,15 +399,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip curl
-      - restore_cache:
-          keys: [oldWorkflowID]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get old stack workflow id
           command: |
+            OldWorkflowID = cat output.txt 
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             # Fetch the stack names          
