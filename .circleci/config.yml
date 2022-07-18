@@ -362,12 +362,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       yum install -y tar gzip curl
-      #       curl -sL https://rpm.nodesource.com/setup_10.x | bash -
-      #       yum install -y nodejs
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip curl
+            # curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+            # yum install -y nodejs
       - run:
           name: Update cloudfront distribution
           command: |
@@ -376,6 +376,7 @@ jobs:
                     --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
             echo "$OldWorkflowID" >> output.txt
+            cat output.txt
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
 
             # aws cloudformation deploy \
@@ -401,6 +402,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip curl
       - run:
           name: Get old stack workflow id
           command: |
