@@ -273,7 +273,7 @@ Resources:
           echo "      - alert: InstanceDown" >> rules.yml
           echo "        expr: up == 0" >> rules.yml
           echo "        labels:" >> rules.yml
-          echo "          severity:" >> rules.yml
+          echo "          severity: "critical" >> rules.yml
           echo "        annotations:" >> rules.yml
           echo "          summary: Instance is down" >> rules.yml
           echo "          descriptions: of job has ben down for more than 3 minutes" >> rules.yml
