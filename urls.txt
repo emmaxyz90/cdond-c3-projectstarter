@@ -1,5 +1,6 @@
 
 URL01: https://github.com/emmaxyz90/cdond-c3-projectstarter 
 
+URL02: http://udapeople-f9383fa.s3-website-us-east-1.amazonaws.com/
 
-URL02: http://udapeople-9f414c1.s3-website-us-east-1.amazonaws.com
+URL03: http://d30ru1tsick8zm.cloudfront.net
