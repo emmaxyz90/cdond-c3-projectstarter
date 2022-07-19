@@ -32,6 +32,10 @@ commands:
                 npm run migration:revert
             fi 
 
+parameters:
+  workflow_id:
+    type: string
+    default: "f9383fa"
 
 jobs:
   build-frontend:
@@ -409,8 +413,8 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            OldWorkflowID=`cat ~/output.txt`
-            echo OldWorkflowID: "$OldWorkflowID"
+            echo <<pipeline.parameters.workflow_id>>
+            export OldWorkflowID=<<pipeline.parameters.workflow_id>>
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
@@ -423,9 +427,9 @@ jobs:
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "$OldWorkflowID" ]]
             then
               echo "-------------------Cleaning up stack-----------------"
-              aws s3 rm "s3://udapeople-"${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             else "------------------Old Stack succesfully removed-------------------"
             fi
 
@@ -456,34 +460,34 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - add-prometheus-node-exporter:
-          requires: [deploy-infrastructure]
-      - configure-infrastructure:
-          requires: [add-prometheus-node-exporter]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend: 
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [master]
+      # - add-prometheus-node-exporter:
+      #     requires: [deploy-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [add-prometheus-node-exporter]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend: 
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      - cleanup
+          # requires: [cloudfront-update]
